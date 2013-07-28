@@ -6,6 +6,8 @@
     "underscore": "~1.4.4",
     "jquery": "~1.9.1",
     "todomvc-common": "~0.1.4",
-    "backbone.localStorage": "~1.1.0"
+    "backbone.localStorage": "~1.1.0",
+    
+    "curl": "0.7.4"
   }
 }
