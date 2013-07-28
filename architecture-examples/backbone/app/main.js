@@ -5,5 +5,6 @@
 require('backbone').$ = require('jquery');
 
 var View = require('./View');
+var router = require('./router');
 
 new View();
