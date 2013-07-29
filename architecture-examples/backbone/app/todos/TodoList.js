@@ -1,20 +1,17 @@
 'use strict';
 
 var Backbone = require('backbone');
-var LocalStorage = require('LocalStorage');
-var Todo = require('./Todo');
 
 // Todo Collection
 // ---------------
 
 // The collection of todos is backed by *localStorage* instead of a remote
 // server.
-var TodoList = Backbone.Collection.extend({
-	// Reference to this collection's model.
-	model: Todo,
+module.exports = Backbone.Collection.extend({
 
-	// Save all of the todo items under the `"todos"` namespace.
-	localStorage: new LocalStorage('todos-backbone'),
+	initialize: function (options) {
+		this.localStorage = options.localStorage;
+	},
 
 	// Filter down the list of all todo items that are finished.
 	completed: function () {
@@ -43,5 +40,3 @@ var TodoList = Backbone.Collection.extend({
 	}
 });
 
-// Create our global collection of **Todos**.
-module.exports = new TodoList();

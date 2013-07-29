@@ -4,10 +4,6 @@ var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
 
-var todos = require('./todos');
-var todoFilter = require('./filter');
-var template = require('text!./todo.html');
-
 var ENTER_KEY = 13;
 
 // Todo Item View
@@ -17,9 +13,6 @@ var ENTER_KEY = 13;
 module.exports = Backbone.View.extend({
 	//... is a list tag.
 	tagName:  'li',
-
-	// Cache the template function for a single item.
-	template: _.template(template),
 
 	// The DOM events specific to an item.
 	events: {
@@ -33,7 +26,10 @@ module.exports = Backbone.View.extend({
 	// The TodoView listens for changes to its model, re-rendering. Since there's
 	// a one-to-one correspondence between a **Todo** and a **TodoView** in this
 	// app, we set a direct reference on the model for convenience.
-	initialize: function () {
+	initialize: function (options) {
+		this.todoFilter = options.todoFilter;
+		this.todoTemplate = options.todoTemplate;
+
 		this.listenTo(this.model, 'change', this.render);
 		this.listenTo(this.model, 'destroy', this.remove);
 		this.listenTo(this.model, 'visible', this.toggleVisible);
@@ -41,7 +37,7 @@ module.exports = Backbone.View.extend({
 
 	// Re-render the titles of the todo item.
 	render: function () {
-		this.$el.html(this.template(this.model.toJSON()));
+		this.$el.html(this.todoTemplate(this.model.toJSON()));
 		this.$el.toggleClass('completed', this.model.get('completed'));
 		this.toggleVisible();
 		this.$input = this.$('.edit');
@@ -55,8 +51,8 @@ module.exports = Backbone.View.extend({
 	isHidden: function () {
 		var isCompleted = this.model.get('completed');
 		return (// hidden cases only
-			(!isCompleted && todoFilter.filter === 'completed') ||
-			(isCompleted && todoFilter.filter === 'active')
+			(!isCompleted && this.todoFilter.filter === 'completed') ||
+			(isCompleted && this.todoFilter.filter === 'active')
 		);
 	},
 
