@@ -42,15 +42,15 @@ module.exports = Backbone.View.extend({
 		return this;
 	},
 
-	toggleVisible: function () {
-		this.$el.toggleClass('hidden', this.isHidden());
+	toggleVisible: function (filter) {
+		this.$el.toggleClass('hidden', this.isHidden(filter));
 	},
 
-	isHidden: function () {
+	isHidden: function (filter) {
 		var isCompleted = this.model.get('completed');
 		return (// hidden cases only
-			(!isCompleted && this.todoFilter.filter === 'completed') ||
-			(isCompleted && this.todoFilter.filter === 'active')
+			(!isCompleted && filter === 'completed') ||
+			(isCompleted && filter === 'active')
 		);
 	},
 
