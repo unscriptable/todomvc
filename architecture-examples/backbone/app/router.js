@@ -1,4 +1,3 @@
-/*global Backbone */
 'use strict';
 
 var Backbone = require('backbone');
