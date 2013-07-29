@@ -34,6 +34,7 @@ var app = new AppView({
 	TodoView: TodoView,
 	statsTemplate: _.template(statsHtml),
 	todoTemplate: _.template(todoHtml),
+	el: $('#todoapp'),
 	$toggleAll: $('#toggle-all'),
 	$newTodo: $('#new-todo'),
 	$todoList: $('#todo-list'),
@@ -41,7 +42,7 @@ var app = new AppView({
 	$main: $('#main')
 });
 
-var router = new Backbone.Router({
+new Backbone.Router({
 	routes: {
 		'*filter': function(param) {
 			app.filterAll(param || '');
