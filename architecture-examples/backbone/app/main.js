@@ -19,9 +19,7 @@ var AppView = require('./View');
 var TodoView = require('./todos/View');
 var statsHtml = require('text!./stats.html');
 var todoHtml = require('text!./todos/todo.html');
-var Router = require('./router');
 var LocalStorage = require('LocalStorage');
-var todoFilter = require('./todos/filter');
 
 
 // Compose application
@@ -31,14 +29,8 @@ var todos = new TodoList({
 	localStorage: new LocalStorage('todos-backbone')
 });
 
-var router = new Router({
+var app = new AppView({
 	todos: todos,
-	todoFilter: todoFilter
-});
-
-new AppView({
-	todos: todos,
-	todoFilter: todoFilter,
 	TodoView: TodoView,
 	statsTemplate: _.template(statsHtml),
 	todoTemplate: _.template(todoHtml),
@@ -48,3 +40,13 @@ new AppView({
 	$footer: $('#footer'),
 	$main: $('#main')
 });
+
+var router = new Backbone.Router({
+	routes: {
+		'*filter': function(param) {
+			app.filterAll(param || '');
+		}
+	}
+});
+
+Backbone.history.start();
