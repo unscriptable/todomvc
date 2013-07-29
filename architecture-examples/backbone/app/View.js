@@ -7,6 +7,7 @@ var $ = require('jquery');
 var todos = require('./todos/todos');
 var TodoView = require('./todos/View');
 var todoFilter = require('./todos/filter');
+var statsTemplate = require('text!./stats.html');
 
 var ENTER_KEY = 13;
 
@@ -22,7 +23,7 @@ module.exports = Backbone.View.extend({
 	el: '#todoapp',
 
 	// Our template for the line of statistics at the bottom of the app.
-	statsTemplate: _.template($('#stats-template').html()),
+	statsTemplate: _.template(statsTemplate),
 
 	// Delegated events for creating new items, and clearing completed ones.
 	events: {

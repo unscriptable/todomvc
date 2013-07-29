@@ -6,6 +6,7 @@ var $ = require('jquery');
 
 var todos = require('./todos');
 var todoFilter = require('./filter');
+var template = require('text!./todo.html');
 
 var ENTER_KEY = 13;
 
@@ -18,7 +19,7 @@ module.exports = Backbone.View.extend({
 	tagName:  'li',
 
 	// Cache the template function for a single item.
-	template: _.template($('#item-template').html()),
+	template: _.template(template),
 
 	// The DOM events specific to an item.
 	events: {
