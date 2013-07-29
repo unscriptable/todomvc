@@ -30,8 +30,8 @@ module.exports = Backbone.View.extend({
 		this.TodoView = options.TodoView;
 		this.statsTemplate = options.statsTemplate;
 		this.todoTemplate = options.todoTemplate;
+		this.activeFilter = options.activeFilter || '';
 
-		this.todoFilter = options.todoFilter;
 		this.allCheckbox = options.$toggleAll[0];
 		this.$input = options.$newTodo;
 		this.$todoList = options.$todoList;
@@ -64,7 +64,7 @@ module.exports = Backbone.View.extend({
 
 			this.$('#filters li a')
 				.removeClass('selected')
-				.filter('[href="#/' + this.todoFilter.filter + '"]')
+				.filter('[href="#/' + this.activeFilter + '"]')
 				.addClass('selected');
 		} else {
 			this.$main.hide();
@@ -91,12 +91,15 @@ module.exports = Backbone.View.extend({
 		this.todos.each(this.addOne, this);
 	},
 
-	filterOne: function (todo) {
-		todo.trigger('visible');
+	filterOne: function (todo, filter) {
+		todo.trigger('visible', filter);
 	},
 
-	filterAll: function () {
-		this.todos.each(this.filterOne, this);
+	filterAll: function (filter) {
+		this.activeFilter = filter;
+		this.todos.each(function(todo) {
+			this.filterOne(todo, filter);
+		}, this);
 	},
 
 	// Generate the attributes for a new Todo item.
