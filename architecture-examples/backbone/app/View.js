@@ -1,8 +1,6 @@
 'use strict';
 
 var Backbone = require('backbone');
-var _ = require('underscore');
-var $ = require('jquery');
 
 var ENTER_KEY = 13;
 
@@ -34,10 +32,11 @@ module.exports = Backbone.View.extend({
 		this.todoTemplate = options.todoTemplate;
 
 		this.todoFilter = options.todoFilter;
-		this.allCheckbox = this.$('#toggle-all')[0];
-		this.$input = this.$('#new-todo');
-		this.$footer = this.$('#footer');
-		this.$main = this.$('#main');
+		this.allCheckbox = options.$toggleAll[0];
+		this.$input = options.$newTodo;
+		this.$todoList = options.$todoList;
+		this.$footer = options.$footer;
+		this.$main = options.$main;
 
 		this.listenTo(this.todos, 'add', this.addOne);
 		this.listenTo(this.todos, 'reset', this.addAll);
@@ -83,12 +82,12 @@ module.exports = Backbone.View.extend({
 			todoFilter: this.todoFilter,
 			todoTemplate: this.todoTemplate
 		});
-		$('#todo-list').append(view.render().el);
+		this.$todoList.append(view.render().el);
 	},
 
 	// Add all items in the **Todos** collection at once.
 	addAll: function () {
-		this.$('#todo-list').html('');
+		this.$todoList.html('');
 		this.todos.each(this.addOne, this);
 	},
 
@@ -122,7 +121,7 @@ module.exports = Backbone.View.extend({
 
 	// Clear all completed todo items, destroying their models.
 	clearCompleted: function () {
-		_.invoke(this.todos.completed(), 'destroy');
+		this.todos.completed().forEach(function (todo) { todo.destroy(); });
 		return false;
 	},
 

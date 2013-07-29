@@ -1,10 +1,17 @@
 /*jshint unused:false */
 
+// Infrastructure
+
+var Backbone = require('backbone');
+var _ = require('underscore');
+var $ = require('jquery');
+
 // there seems to be a bug in backbone.min when used as CommonJS in a browser.
 // this fixes it:
-require('backbone').$ = require('jquery');
+Backbone.$ = $;
 
-var _ = require('underscore');
+
+// Application components
 
 var TodoList = require('./todos/TodoList');
 var Todo = require('./todos/Todo');
@@ -16,6 +23,8 @@ var Router = require('./router');
 var LocalStorage = require('LocalStorage');
 var todoFilter = require('./todos/filter');
 
+
+// Compose application
 
 var todos = new TodoList({
 	model: Todo,
@@ -32,5 +41,10 @@ new AppView({
 	todoFilter: todoFilter,
 	TodoView: TodoView,
 	statsTemplate: _.template(statsHtml),
-	todoTemplate: _.template(todoHtml)
+	todoTemplate: _.template(todoHtml),
+	$toggleAll: $('#toggle-all'),
+	$newTodo: $('#new-todo'),
+	$todoList: $('#todo-list'),
+	$footer: $('#footer'),
+	$main: $('#main')
 });
