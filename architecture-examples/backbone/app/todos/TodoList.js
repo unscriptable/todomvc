@@ -11,6 +11,7 @@ module.exports = Backbone.Collection.extend({
 
 	initialize: function (options) {
 		this.localStorage = options.localStorage;
+		this.model = options.model
 	},
 
 	// Filter down the list of all todo items that are finished.
