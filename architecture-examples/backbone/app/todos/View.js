@@ -9,18 +9,6 @@ var ENTER_KEY = 13;
 
 // The DOM element for a todo item...
 module.exports = Backbone.View.extend({
-	//... is a list tag.
-	tagName:  'li',
-
-	// The DOM events specific to an item.
-	events: {
-		'click .toggle': 'toggleCompleted',
-		'dblclick label': 'edit',
-		'click .destroy': 'clear',
-		'keypress .edit': 'updateOnEnter',
-		'blur .edit': 'close'
-	},
-
 	// The TodoView listens for changes to its model, re-rendering. Since there's
 	// a one-to-one correspondence between a **Todo** and a **TodoView** in this
 	// app, we set a direct reference on the model for convenience.

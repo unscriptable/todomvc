@@ -11,19 +11,12 @@ var ENTER_KEY = 13;
 // Our overall **View** is the top-level piece of UI.
 module.exports = Backbone.View.extend({
 
-	// Delegated events for creating new items, and clearing completed ones.
-	events: {
-		'keypress #new-todo': 'createOnEnter',
-		'click #clear-completed': 'clearCompleted',
-		'click #toggle-all': 'toggleAllComplete'
-	},
-
 	// At initialization we bind to the relevant events on the `Todos`
 	// collection, when items are added or changed. Kick things off by
 	// loading any preexisting todos that might be saved in *localStorage*.
 	initialize: function (options) {
 		this.todos = options.todos;
-		this.TodoView = options.TodoView;
+		this.createTodoView = options.createTodoView;
 		this.statsTemplate = options.statsTemplate;
 		this.todoTemplate = options.todoTemplate;
 		this.activeFilter = options.activeFilter || '';
@@ -73,12 +66,8 @@ module.exports = Backbone.View.extend({
 	// Add a single todo item to the list by creating a view for it, and
 	// appending its element to the `<ul>`.
 	addOne: function (todo) {
-		var view = new this.TodoView({
-			model: todo,
-			todoFilter: this.todoFilter,
-			todoTemplate: this.todoTemplate
-		});
-		this.$todoList.append(view.render().el);
+		var view = this.createTodoView(todo);
+		this.$todoList.append(view.el);
 	},
 
 	// Add all items in the **Todos** collection at once.

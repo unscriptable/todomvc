@@ -21,7 +21,6 @@ var statsHtml = require('text!./stats.html');
 var todoHtml = require('text!./todos/todo.html');
 var LocalStorage = require('LocalStorage');
 
-
 // Compose application
 
 var todos = new TodoList({
@@ -31,15 +30,19 @@ var todos = new TodoList({
 
 var app = new AppView({
 	todos: todos,
-	TodoView: TodoView,
+	createTodoView: createTodoView,
 	statsTemplate: _.template(statsHtml),
-	todoTemplate: _.template(todoHtml),
 	el: $('#todoapp'),
 	$toggleAll: $('#toggle-all'),
 	$newTodo: $('#new-todo'),
 	$todoList: $('#todo-list'),
 	$footer: $('#footer'),
-	$main: $('#main')
+	$main: $('#main'),
+	events: {
+		'keypress #new-todo': 'createOnEnter',
+		'click #clear-completed': 'clearCompleted',
+		'click #toggle-all': 'toggleAllComplete'
+	}
 });
 
 new Backbone.Router({
@@ -51,3 +54,20 @@ new Backbone.Router({
 });
 
 Backbone.history.start();
+
+function createTodoView (todo) {
+	var view = new TodoView({
+		model: todo,
+		todoTemplate: _.template(todoHtml),
+		tagName:  'li',
+		events: {
+			'click .toggle': 'toggleCompleted',
+			'click .destroy': 'clear',
+			'keypress .edit': 'updateOnEnter',
+			'blur .edit': 'close',
+			'dblclick label': 'edit'
+		}
+	});
+	view.render();
+	return view;
+}
