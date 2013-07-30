@@ -36,7 +36,8 @@ curl.config({
 curl(['app', 'theme/base']).then(successed, failed);
 
 function successed (app) {
-	console.log('app started. yay!');
+	app.create();
+	app.start();
 }
 
 function failed (ex) {
