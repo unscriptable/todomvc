@@ -11,7 +11,7 @@ Backbone.$ = $;
 
 // Application components
 
-var TodoList = require('./todos/TodoList');
+var TodoList = require('./TodoList');
 var Todo = require('./todos/Todo');
 var AppView = require('./View');
 var TodoView = require('./todos/View');
