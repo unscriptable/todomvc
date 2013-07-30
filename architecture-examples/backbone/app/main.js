@@ -19,7 +19,7 @@ var todos = require('./todos/main');
 var AppView = require('./View');
 var statsHtml = require('text!./stats.html');
 var LocalStorage = require('LocalStorage');
-
+var mediator = require('./mediateFilterAndTodos');
 
 // Export lifecycle methods
 
@@ -60,16 +60,14 @@ exports.create = function () {
 
 // Advise components
 
-var todoViews = {}, viewFilter = '';
-
 exports.init = function () {
 
-	before(app, 'filterAll', setFilter);
-	after(app, 'filterAll', refreshViews);
+	before(app, 'filterAll', mediator.setFilter);
+	after(app, 'filterAll', mediator.refreshViews);
 
-	after(app, 'createTodoView', saveTodoView);
-	after(app, 'createTodoView', adviseTodoView);
-	after(app, 'createTodoView', toggleHidden);
+	after(app, 'createTodoView', mediator.saveTodoView);
+	after(app, 'createTodoView', mediator.adviseTodoView);
+	after(app, 'createTodoView', mediator.toggleHidden);
 
 };
 
@@ -82,34 +80,3 @@ exports.start = function () {
 	});
 
 };
-
-function setFilter (filter) {
-	viewFilter = filter;
-}
-
-function refreshViews () {
-	for (var cid in todoViews) {
-		toggleHidden(todoViews[cid]);
-	}
-}
-
-function saveTodoView (view) {
-	todoViews[view.cid] = view;
-}
-
-function adviseTodoView (view) {
-	after(view, 'render', toggleHidden);
-	before(view, 'remove', function () {
-		delete todoViews[view.cid];
-	});
-}
-
-function toggleHidden (view) {
-	var isCompleted = view.model.get('completed');
-	var isHidden = (// hidden cases only
-		(!isCompleted && viewFilter === 'completed') ||
-		(isCompleted && viewFilter === 'active')
-	);
-	view.toggleVisible(isHidden);
-	return view;
-}
