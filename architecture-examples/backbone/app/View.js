@@ -74,15 +74,8 @@ module.exports = Backbone.View.extend({
 		this.todos.each(this.addOne, this);
 	},
 
-	filterOne: function (todo, filter) {
-		todo.trigger('visible', filter);
-	},
-
 	filterAll: function (filter) {
 		this.activeFilter = filter;
-		this.todos.each(function(todo) {
-			this.filterOne(todo, filter);
-		}, this);
 	},
 
 	// Generate the attributes for a new Todo item.

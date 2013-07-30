@@ -53,6 +53,21 @@ exports.create = function () {
 			}
 		}
 	});
+};
+
+// Advise components
+
+exports.init = function () {
+
+	app.filterAll = (function (orig) {
+		return function (filter) {
+			var result = orig.apply(this, arguments);
+			this.todos.each(function (todo) {
+				todo.trigger('visible', filter);
+			});
+			return result;
+		}
+	}(app.filterAll));
 
 };
 

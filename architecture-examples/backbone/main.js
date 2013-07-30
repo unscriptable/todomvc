@@ -37,6 +37,7 @@ curl(['app', 'theme/base']).then(successed, failed);
 
 function successed (app) {
 	app.create();
+	app.init();
 	app.start();
 }
 
