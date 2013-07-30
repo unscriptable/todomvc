@@ -19,7 +19,8 @@ var todos = require('./todos/main');
 var AppView = require('./View');
 var statsHtml = require('text!./stats.html');
 var LocalStorage = require('LocalStorage');
-var mediator = require('./mediateFilterAndTodos');
+
+require('css!./states.css');
 
 // Export lifecycle methods
 
@@ -36,6 +37,7 @@ exports.create = function () {
 		todos: todoList,
 		createTodoView: todos.create,
 		statsTemplate: _.template(statsHtml),
+		filterClasses: { all: 'all', active: 'active', completed: 'completed' },
 		el: $('#todoapp'),
 		$toggleAll: $('#toggle-all'),
 		$newTodo: $('#new-todo'),
@@ -52,7 +54,7 @@ exports.create = function () {
 	new Backbone.Router({
 		routes: {
 			'*filter': function (param) {
-				app.filterAll(param || '');
+				app.setFilter(param || 'all');
 			}
 		}
 	});
@@ -60,16 +62,7 @@ exports.create = function () {
 
 // Advise components
 
-exports.init = function () {
-
-	before(app, 'filterAll', mediator.setFilter);
-	after(app, 'filterAll', mediator.refreshViews);
-
-	after(app, 'createTodoView', mediator.saveTodoView);
-	after(app, 'createTodoView', mediator.adviseTodoView);
-	after(app, 'createTodoView', mediator.toggleHidden);
-
-};
+exports.init = function () {};
 
 // Start application
 

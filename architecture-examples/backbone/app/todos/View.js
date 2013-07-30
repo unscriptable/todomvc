@@ -31,10 +31,6 @@ module.exports = Backbone.View.extend({
 		return this.render();
 	},
 
-	toggleVisible: function (visible) {
-		this.$el.toggleClass('hidden', visible);
-	},
-
 	// Toggle the `"completed"` state of the model.
 	toggleCompleted: function () {
 		this.model.toggle();

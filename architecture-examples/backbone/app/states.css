@@ -1,0 +1,37 @@
+/* completed are normally hidden in all but "completed" state */
+#todoapp #todo-list .completed {
+	display: none;
+}
+
+/* non-completed are normally hidden in the "completed" state */
+#todoapp.completed #todo-list li {
+	display: none;
+}
+
+/* show them when todo list is in the "all" or "completed" state */
+#todoapp.all #todo-list li.completed {
+	display: block;
+}
+
+#todoapp.completed #todo-list li.completed {
+	display: block;
+}
+
+
+/* filters are normally unbold */
+#todoapp #filters {
+	font-weight: normal;
+}
+
+/* bold them when they match the selected state */
+#todoapp.all #filters .all {
+	font-weight: bold;
+}
+
+#todoapp.active #filters .active {
+	font-weight: bold;
+}
+
+#todoapp.completed #filters .completed {
+	font-weight: bold;
+}
