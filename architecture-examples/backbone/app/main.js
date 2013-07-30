@@ -3,6 +3,9 @@
 var Backbone = require('backbone');
 var _ = require('underscore');
 var $ = require('jquery');
+var meld = require('meld');
+var after = meld.after;
+var before = meld.before;
 
 // there seems to be a bug in backbone.min when used as CommonJS in a browser.
 // this fixes it:
@@ -57,17 +60,16 @@ exports.create = function () {
 
 // Advise components
 
+var todoViews = {}, viewFilter = '';
+
 exports.init = function () {
 
-	app.filterAll = (function (orig) {
-		return function (filter) {
-			var result = orig.apply(this, arguments);
-			this.todos.each(function (todo) {
-				todo.trigger('visible', filter);
-			});
-			return result;
-		}
-	}(app.filterAll));
+	before(app, 'filterAll', setFilter);
+	after(app, 'filterAll', refreshViews);
+
+	after(app, 'createTodoView', saveTodoView);
+	after(app, 'createTodoView', adviseTodoView);
+	after(app, 'createTodoView', toggleHidden);
 
 };
 
@@ -75,7 +77,39 @@ exports.init = function () {
 
 exports.start = function () {
 
-	Backbone.history.start();
-	todoList.fetch();
+	todoList.fetch({
+		success: function () { Backbone.history.start(); }
+	});
 
 };
+
+function setFilter (filter) {
+	viewFilter = filter;
+}
+
+function refreshViews () {
+	for (var cid in todoViews) {
+		toggleHidden(todoViews[cid]);
+	}
+}
+
+function saveTodoView (view) {
+	todoViews[view.cid] = view;
+}
+
+function adviseTodoView (view) {
+	after(view, 'render', toggleHidden);
+	before(view, 'remove', function () {
+		delete todoViews[view.cid];
+	});
+}
+
+function toggleHidden (view) {
+	var isCompleted = view.model.get('completed');
+	var isHidden = (// hidden cases only
+		(!isCompleted && viewFilter === 'completed') ||
+		(isCompleted && viewFilter === 'active')
+	);
+	view.toggleVisible(isHidden);
+	return view;
+}

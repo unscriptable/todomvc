@@ -15,30 +15,24 @@ module.exports = Backbone.View.extend({
 	initialize: function (options) {
 		this.todoTemplate = options.todoTemplate;
 
-		this.listenTo(this.model, 'change', this.render);
-		this.listenTo(this.model, 'destroy', this.remove);
-		this.listenTo(this.model, 'visible', this.toggleVisible);
+		this.listenTo(this.model, 'change', this.change);
+		this.listenTo(this.model, 'destroy', this.destroy);
 	},
 
 	// Re-render the titles of the todo item.
 	render: function () {
 		this.$el.html(this.todoTemplate(this.model.toJSON()));
 		this.$el.toggleClass('completed', this.model.get('completed'));
-		this.toggleVisible();
 		this.$input = this.$('.edit');
 		return this;
 	},
 
-	toggleVisible: function (filter) {
-		this.$el.toggleClass('hidden', this.isHidden(filter));
+	change: function () {
+		return this.render();
 	},
 
-	isHidden: function (filter) {
-		var isCompleted = this.model.get('completed');
-		return (// hidden cases only
-			(!isCompleted && filter === 'completed') ||
-			(isCompleted && filter === 'active')
-		);
+	toggleVisible: function (visible) {
+		this.$el.toggleClass('hidden', visible);
 	},
 
 	// Toggle the `"completed"` state of the model.
@@ -70,6 +64,10 @@ module.exports = Backbone.View.extend({
 		if (e.which === ENTER_KEY) {
 			this.close();
 		}
+	},
+
+	destroy: function (todo) {
+		this.remove(todo);
 	},
 
 	// Remove the item, destroy the model from *localStorage* and delete its view.

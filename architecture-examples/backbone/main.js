@@ -10,6 +10,7 @@ curl.config({
 	packages: {
 		app: { location: 'app', config: cjs },
 		curl: { location: 'bower_components/curl/src/curl', main: '../curl' },
+		meld: { location: 'bower_components/meld', main: 'meld' },
 		theme: { location: 'bower_components/todomvc-common', config: css },
 		backbone: {
 			location: 'bower_components/backbone',

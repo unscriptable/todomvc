@@ -8,6 +8,7 @@
     "todomvc-common": "~0.1.4",
     "backbone.localStorage": "~1.1.0",
 
-    "curl": "~0.7"
+    "curl": "~0.7",
+    "meld": "~1.3.0"
   }
 }

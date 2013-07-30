@@ -29,7 +29,6 @@ module.exports = Backbone.View.extend({
 
 		this.listenTo(this.todos, 'add', this.addOne);
 		this.listenTo(this.todos, 'reset', this.addAll);
-		this.listenTo(this.todos, 'change:completed', this.filterOne);
 		this.listenTo(this.todos, 'filter', this.filterAll);
 		this.listenTo(this.todos, 'all', this.render);
 	},
@@ -76,6 +75,8 @@ module.exports = Backbone.View.extend({
 
 	filterAll: function (filter) {
 		this.activeFilter = filter;
+		this.render();
+		return filter;
 	},
 
 	// Generate the attributes for a new Todo item.
