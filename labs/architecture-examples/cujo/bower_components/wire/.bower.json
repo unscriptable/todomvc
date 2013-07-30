@@ -1,0 +1,28 @@
+{
+  "name": "wire",
+  "version": "0.10.1",
+  "main": "./wire.js",
+  "dependencies": {
+    "meld": "~1",
+    "when": "~2",
+    "poly": "~0"
+  },
+  "devDependencies": {
+    "curl": "~0",
+    "requirejs": "~2",
+    "requirejs-domready": "~2",
+    "sizzle": "~1",
+    "jquery": "~1",
+    "dojo": "~1",
+    "dijit": "~1"
+  },
+  "homepage": "https://github.com/cujojs/wire",
+  "_release": "0.10.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.10.1",
+    "commit": "956c410387821f3e9e6c686023a42be80969c878"
+  },
+  "_source": "git://github.com/cujojs/wire.git",
+  "_target": "~0.10"
+}

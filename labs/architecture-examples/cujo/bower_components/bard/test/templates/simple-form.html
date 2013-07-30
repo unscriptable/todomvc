@@ -1,0 +1,23 @@
+<div>
+	<header>{{instructions}}</header>
+
+	<form>
+	{{#person}}
+		<ul>
+			<li>
+				<select name="prefix" value="{{prefix}}">
+					<option key="mr" value="Mr."/>
+					<option key="mrs" value="Mrs."/>
+					<option key="ms" value="Ms."/>
+				</select>
+			</li>
+			<li><input name="first" type="text" value="{{firstname}}"/></li>
+			<li><input name="last" type="text" value="{{lastname}}"/></li>
+			<li><label><input name="jedi" type="checkbox" {{jedi_master}}/>Jedi Master</label></li>
+		</ul>
+
+	{{/person}}
+	</form>
+
+	<footer>this is the footer</footer>
+</div>

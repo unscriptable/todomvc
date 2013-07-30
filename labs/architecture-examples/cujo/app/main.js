@@ -210,7 +210,7 @@ define({
 		}
 	},
 
-	plugins: [ 'wire/debug',
+	plugins: [//'wire/debug',
 		'wire/dom', 'wire/dom/render', 'wire/on',
 		'wire/aop', 'wire/connect'
 	]

@@ -1,0 +1,13 @@
+{
+  "name": "curl",
+  "version": "0.7.5",
+  "homepage": "https://github.com/cujojs/curl",
+  "_release": "0.7.5",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.7.5",
+    "commit": "ef2bd16e9b43e7cd81011498b94cff9b66e28452"
+  },
+  "_source": "git://github.com/cujojs/curl.git",
+  "_target": "~0.7.4"
+}

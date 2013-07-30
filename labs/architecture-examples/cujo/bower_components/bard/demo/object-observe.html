@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Demo using Object.observe(array)</title>
+
+<script src="../amd_modules/curl/src/curl.js"></script>
+
+<script>
+curl.config(
+	{
+		baseUrl: '',
+		packages: {
+			bard: { location: '../' },
+			curl: { location: '../amd_modules/curl/src/curl' }
+		}
+	}
+);
+
+curl(['bard/array', 'bard/model', 'bard/bind/byAttr', 'bard/bind/bySelectorMap'], function (array, model, byAttr, bySelectorMap) {
+	var root, form, reactiveList, reactiveForm, coders;
+
+	root = document.getElementById('list');
+	form = document.getElementById('edit');
+
+	reactiveList = array(root, {
+		binder: byAttr({}),
+		id: 'spid',
+		sortBy: 'lastname',
+		transform: function (val, key) {
+			if (val == null && /superpower$/.test(key)) return 'retrieving...';
+			else return val;
+		}
+	});
+	reactiveForm = model(form, {
+		binder: bySelectorMap({
+			bindings: {
+				firstname: '.firstname',
+				lastname: '.lastname',
+				superpower: '.superpower'
+			}
+		})
+	});
+
+	coders = [];
+	Object.observe(coders, reactiveList.update);
+
+	coders.push({
+		spid: 1,
+		firstname: 'Brian',
+		lastname: 'Cavalier'
+	});
+	coders.push({
+		spid: 2,
+		firstname: 'John',
+		lastname: 'Hann'
+	});
+
+	setTimeout(function () {
+		coders[0] = {
+			spid: coders[0].spid,
+			firstname: coders[0].firstname,
+			lastname: coders[0].lastname,
+			superpower: 'Can has mind meld with the codez.'
+		};
+		coders[1] = {
+			spid: coders[1].spid,
+			firstname: coders[1].firstname,
+			lastname: coders[1].lastname,
+			superpower: 'Able to cram tall bundles in a single build.'
+		};
+		coders.push({
+			spid: 3,
+			firstname: 'Scott',
+			lastname: 'Andrews',
+			superpower: 'Can rest just about anywhere.'
+		});
+		coders.push({
+			spid: 4,
+			firstname: 'Jeremy',
+			lastname: 'Grelle',
+			superpower: 'Able to be coherent at 7 AM during standups.'
+		});
+	}, 2000);
+
+	document.body.addEventListener('click', function (e) {
+		if (e.target.nodeName != 'BUTTON') return;
+		e.preventDefault();
+		var coder = reactiveList.find(e);
+		if (coder) {
+			// how do we observe real-time changes?
+			reactiveForm.set(coder);
+		}
+	}, false);
+
+	// TODO: why aren't submit and reset form events firing?
+
+//	form.addEventListener('submit', function (e) {
+	form.addEventListener('click', function (e) {
+		if (e.target.type != 'submit') return;
+		e.preventDefault();
+		var coder = reactiveForm.find(e);
+		if (coder) {
+			var updated = reactiveForm.get(coder);
+			// this is unfortunately lame:
+			coders.some(function (coder, i) {
+				if (coder.spid == updated.spid) {
+					coders[i] = clone(updated);
+					return true;
+				}
+			});
+			reactiveForm.clear();
+		}
+	}, false);
+
+	form.addEventListener('reset', function (e) {
+		e.preventDefault();
+		reactiveForm.clear();
+	}, false);
+
+	function clone (obj) {
+		var o = {};
+		for (var p in obj) {
+			if (obj.hasOwnProperty(p)) o[p] = obj[p];
+		}
+		return o;
+	}
+
+});
+</script>
+
+</head>
+<body>
+
+<h2>Super coders</h2>
+
+<ul id="list" data-bard-section="person">
+	<li>
+		<h3>
+			<span data-bard-bind="text:lastname"></span>,
+			<span data-bard-bind="text:firstname"></span>
+		</h3>
+		<i><span data-bard-bind="text:superpower"></span></i>
+		<button type="button">Edit</button>
+	</li>
+</ul>
+
+<p>(click to edit)</p>
+<hr/>
+<form method="post" action="#" id="edit" data-bard-section="person">
+	<h3>
+		Super coder: <input class="firstname" data-bard-bind="value:lastname"/>
+		<input class="lastname" data-bard-bind="value:firstname"/>
+	</h3>
+	<label>
+		Super power:
+		<textarea class="superpower" data-bard-bind="value:superpower" cols="80"></textarea>
+	</label>
+	<br/>
+	<button type="submit">Save</button>
+	<button type="reset">Clear</button>
+</form>
+
+<style>
+	ul { padding: 0; background-color: #eee; }
+	li { list-style: none; }
+	li:hover { background-color: #efe; }
+</style>
+</body>
+</html>
