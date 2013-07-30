@@ -32,8 +32,6 @@ module.exports = Backbone.View.extend({
 		this.listenTo(this.todos, 'change:completed', this.filterOne);
 		this.listenTo(this.todos, 'filter', this.filterAll);
 		this.listenTo(this.todos, 'all', this.render);
-
-		this.todos.fetch();
 	},
 
 	// Re-rendering the App just means refreshing the statistics -- the rest

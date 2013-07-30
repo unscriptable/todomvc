@@ -1,5 +1,3 @@
-/*jshint unused:false */
-
 // Infrastructure
 
 var Backbone = require('backbone');
@@ -20,6 +18,7 @@ var TodoView = require('./todos/View');
 var statsHtml = require('text!./stats.html');
 var todoHtml = require('text!./todos/todo.html');
 var LocalStorage = require('LocalStorage');
+
 
 // Compose application
 
@@ -47,13 +46,18 @@ var app = new AppView({
 
 new Backbone.Router({
 	routes: {
-		'*filter': function(param) {
+		'*filter': function (param) {
 			app.filterAll(param || '');
 		}
 	}
 });
 
+
+// Start application
+
 Backbone.history.start();
+todos.fetch();
+
 
 function createTodoView (todo) {
 	var view = new TodoView({
