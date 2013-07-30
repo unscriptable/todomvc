@@ -23,75 +23,32 @@ define(function () {
 	}
 
 	return {
-		/**
-		 * Create a new todo
-		 * @injected
-		 * @param todo {Object} data used to create new todo
-		 * @param todo.text {String} text of the todo
-		 */
-		createTodo: function () {},
-
-		/**
-		 * Remove an existing todo
-		 * @injected
-		 * @param todo {Object} existing todo, or object with same identifier, to remove
-		 */
-		removeTodo: function () {},
-
-		/**
-		 * Update an existing todo
-		 * @injected
-		 * @param todo {Object} updated todo
-		 */
-		updateTodo: function () {},
-
-		/**
-		 * Start inline editing a todo
-		 * @param node {Node} Dom node of the todo
-		 */
-		beginEditTodo: function (node) {
-			this.querySelector('.edit', node).focus();
+		createTodo: function (todos, todo) {
+			todos.create(todo);
 		},
 
-		/**
-		 * Finish editing a todo
-		 * @param todo {Object} todo to finish editing and save changes
-		 */
-		endEditTodo: function (todo) {
-			// As per application spec, todos edited to have empty
-			// text should be removed.
-			if (/\S/.test(todo.text)) {
-				this.updateTodo(todo);
-			} else {
-				this.removeTodo(todo);
-			}
+		removeTodo: function (todos, todo) {
+			todo = todos.get(todo);
+			todo && todo.destroy();
 		},
 
-		/**
-		 * Remove all completed todos
-		 */
-		removeCompleted: function () {
-			var todos = this.todos;
+		updateTodo: function (todos, todo) {
+			todo.save({ completed: !todo.get('completed') });
+		},
 
-			todos.forEach(function (todo) {
-				if (todo.complete) {
-					todos.remove(todo);
-				}
+		removeCompleted: function (todos) {
+			todos.filter(function(todo) {
+				return todo.get('completed');
+			}).forEach(function(todo) {
+				todo.destroy();
 			});
 		},
 
-		/**
-		 * Check/uncheck all todos
-		 */
-		toggleAll: function () {
-			var todos, complete;
-
-			todos = this.todos;
-			complete = this.masterCheckbox.checked;
+		toggleAll: function (todos) {
+			var complete = this.masterCheckbox.checked;
 
 			todos.forEach(function (todo) {
-				todo.complete = complete;
-				todos.update(todo);
+				todo.save({ completed: complete });
 			});
 		},
 
@@ -100,37 +57,38 @@ define(function () {
 		 * the check/uncheck all checkbox if all todos have become
 		 * checked or unchecked.
 		 */
-		updateCount: function () {
+		updateCount: function (todos) {
 			var total, checked;
 
 			total = 0;
 			checked = 0;
 
-			this.todos.forEach(function (todo) {
+			todos.forEach(function (todo) {
 				total++;
 
-				if (todo.complete) {
+				if (todo.get('completed')) {
 					checked++;
 				}
 			});
 
 			this.masterCheckbox.checked = total > 0 && checked === total;
 
-			this.updateTotalCount(total);
-			this.updateCompletedCount(checked);
+			this._updateTotalCount(total);
+			this._updateCompletedCount(checked);
 
-			this.updateRemainingCount(total - checked);
+			this._updateRemainingCount(total - checked);
 		},
 
-		updateTotalCount: function () {},
+		_updateTotalCount: function () {},
 
-		updateCompletedCount: function (completed) {
+		_updateCompletedCount: function (completed) {
 			this.countNode.innerHTML = completed;
 		},
 
-		updateRemainingCount: function (remaining) {
+		_updateRemainingCount: function (remaining) {
 			updateRemainingCount(this.remainingNodes, remaining);
 		}
+
 	};
 
 });
