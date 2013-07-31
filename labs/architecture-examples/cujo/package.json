@@ -1,0 +1,29 @@
+{
+  "name": "cujoJS-todomvc",
+  "version": "0.0.1",
+  "description": "Demo of cujoJS + backbone",
+  "main": "index.html",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "backbone": "~1"
+  },
+  "devDependencies": {
+	  "buster": "~0.6"
+  },
+  "scripts": {
+    "test": "buster test -e node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unscriptable/todomvc/tree/next-bb/labs/architecture-examples/cujo"
+  },
+  "keywords": [
+    "cujoJS",
+    "cujo",
+    "backbone"
+  ],
+  "author": "john@unscriptable.com",
+  "license": "MIT"
+}
