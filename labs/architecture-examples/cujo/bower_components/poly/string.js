@@ -1,12 +1,9 @@
+/** @license MIT License (c) copyright 2013 original authors */
 /**
  * String polyfill / shims
  *
- * (c) copyright 2011-2013 Brian Cavalier and John Hann
- *
- * This module is part of the cujo.js family of libraries (http://cujojs.com/).
- *
- * Licensed under the MIT License at:
- * 		http://www.opensource.org/licenses/mit-license.php
+ * @author Brian Cavalier
+ * @author John Hann
  *
  * Adds str.trim(), str.trimRight(), and str.trimLeft()
  *
@@ -16,8 +13,11 @@
  * from http://perfectionkills.com/whitespace-deviations/
  * '\x09-\x0D\x20\xA0\u1680\u180E\u2000-\u200A\u202F\u205F\u3000\u2028\u2029'
  */
-define (['./lib/_base'], function (base) {
-	"use strict";
+(function (define) {
+define(function (require) {
+"use strict";
+
+	var base = require('./lib/_base');
 
 	var proto = String.prototype,
 		featureMap,
@@ -85,3 +85,8 @@ define (['./lib/_base'], function (base) {
 	};
 
 });
+}(
+	typeof define == 'function' && define.amd
+		? define
+		: function (factory) { module.exports = factory(require); }
+));

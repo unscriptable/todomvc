@@ -1,14 +1,20 @@
-/*
-	poly/strict
+/** @license MIT License (c) copyright 2013 original authors */
+/**
+ * stricter ES5 polyfills / shims for AMD loaders
+ *
+ * @author Brian Cavalier
+ * @author John Hann
+ */
+(function (define) {
+define(function (require) {
 
-	(c) copyright 2011-2013 Brian Cavalier and John Hann
-
-	This module is part of the cujo.js family of libraries (http://cujojs.com/).
-
-	Licensed under the MIT License at:
-		http://www.opensource.org/licenses/mit-license.php
-*/
-define(['./object', './string', './date', './array', './function', './json', './xhr'], function (object, string, date) {
+	var object = require('./object');
+	var string = require('./string');
+	var date = require('./date');
+	require('./array');
+	require('./function');
+	require('./json');
+	require('./xhr');
 
 	var failTestRx;
 
@@ -30,3 +36,8 @@ define(['./object', './string', './date', './array', './function', './json', './
 	};
 
 });
+}(
+	typeof define == 'function' && define.amd
+		? define
+		: function (factory) { module.exports = factory(require); }
+));

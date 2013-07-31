@@ -1,18 +1,18 @@
+/** @license MIT License (c) copyright 2013 original authors */
 /**
  * setImmediate polyfill / shim
  *
- * (c) copyright 2011-2013 Brian Cavalier and John Hann
- *
- * poly is part of the cujo.js family of libraries (http://cujojs.com/)
+ * @author Jared Cacurak
+ * @author Brian Cavalier
+ * @author John Hann
  *
  * Based on NobleJS's setImmediate. (https://github.com/NobleJS/setImmediate)
- *
- * Licensed under the MIT License at:
- *      http://www.opensource.org/licenses/mit-license.php
- *
  */
-(function (global) {
-define(['./lib/_base'], function (base) {
+(function (global, define) {
+define(function (require) {
+"use strict";
+
+	var base = require('./lib/_base');
 
 	var testCache,
 		tasks;
@@ -217,4 +217,9 @@ define(['./lib/_base'], function (base) {
 		}
 	}
 });
-}(this.global || this));
+}(
+	this.global || this,
+	typeof define == 'function' && define.amd
+		? define
+		: function (factory) { module.exports = factory(require); }
+));

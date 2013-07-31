@@ -1,15 +1,12 @@
+/** @license MIT License (c) copyright 2013 original authors */
 /**
  * poly common functions
  *
- * (c) copyright 2011-2013 Brian Cavalier and John Hann
- *
- * This module is part of the cujo.js family of libraries (http://cujojs.com/).
- *
- * Licensed under the MIT License at:
- * 		http://www.opensource.org/licenses/mit-license.php
- *
+ * @author Brian Cavalier
+ * @author John Hann
  */
-define(function (require, exports, module) {
+(function (define) {
+define(function (require, exports) {
 
 	var toString;
 
@@ -23,6 +20,10 @@ define(function (require, exports, module) {
 		return toString.call(o) == '[object String]';
 	};
 
+	exports.isArray = function (o) {
+		return toString.call(o) == '[object Array]';
+	};
+
 	exports.toString = function (o) {
 		return toString.apply(o);
 	};
@@ -32,6 +33,17 @@ define(function (require, exports, module) {
 			if (o == null) throw new TypeError(name + ' method called on null or undefined');
 			return caster(o);
 		}
-	}
+	};
+
+	exports.isElement = function(o){
+		return typeof HTMLElement == 'undefined'
+			? 'tagName' in o && 'nodeName' in o
+			: o instanceof HTMLELEMENT;
+	};
 
 });
+}(
+	typeof define == 'function' && define.amd
+		? define
+		: function (factory) { factory(require, exports); }
+));

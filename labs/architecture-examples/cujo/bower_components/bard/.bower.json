@@ -1,0 +1,21 @@
+{
+  "name": "bard",
+  "version": "0.0.6",
+  "main": "reactive",
+  "ignore": [
+    "node_modules",
+    "amd_modules"
+  ],
+  "devDependencies": {
+    "curl": "0.7.4"
+  },
+  "homepage": "https://github.com/unscriptable/bard",
+  "_release": "0.0.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.0.6",
+    "commit": "6924929e2b45af4aaa18e0c9ee5b20b86d526bcc"
+  },
+  "_source": "git://github.com/unscriptable/bard.git",
+  "_target": "*"
+}

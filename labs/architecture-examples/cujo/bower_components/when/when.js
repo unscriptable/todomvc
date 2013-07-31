@@ -9,16 +9,17 @@
  *
  * @author Brian Cavalier
  * @author John Hann
- * @version 2.1.1
+ * @version 2.2.1
  */
 (function(define, global) { 'use strict';
 define(function () {
 
 	// Public API
 
-	when.defer     = defer;      // Create a deferred
+	when.promise   = promise;    // Create a pending promise
 	when.resolve   = resolve;    // Create a resolved promise
 	when.reject    = reject;     // Create a rejected promise
+	when.defer     = defer;      // Create a {promise, resolver} pair
 
 	when.join      = join;       // Join 2 or more promises
 
@@ -32,7 +33,6 @@ define(function () {
 
 	when.isPromise = isPromise;  // Determine if a thing is a promise
 
-	when.promise   = promise;    // EXPERIMENTAL: May change. Use at your own risk
 
 	/**
 	 * Register an observer for a promise or immediate value.
@@ -164,10 +164,10 @@ define(function () {
 	}
 
 	/**
-	 * Creates a new Deferred with fully isolated resolver and promise parts,
-	 * either or both of which may be given out safely to consumers.
+	 * Creates a {promise, resolver} pair, either or both of which
+	 * may be given out safely to consumers.
 	 * The resolver has resolve, reject, and progress.  The promise
-	 * only has then.
+	 * has then plus extended promise API.
 	 *
 	 * @return {{
 	 * promise: Promise,
@@ -221,12 +221,25 @@ define(function () {
 
 	/**
 	 * Creates a new promise whose fate is determined by resolver.
-	 * @private (for now)
 	 * @param {function} resolver function(resolve, reject, notify)
 	 * @returns {Promise} promise whose fate is determine by resolver
 	 */
 	function promise(resolver) {
-		var value, handlers = [];
+		return _promise(resolver, monitorApi.PromiseStatus && monitorApi.PromiseStatus());
+	}
+
+	/**
+	 * Creates a new promise, linked to parent, whose fate is determined
+	 * by resolver.
+	 * @param {function} resolver function(resolve, reject, notify)
+	 * @param {Promise?} status promise from which the new promise is begotten
+	 * @returns {Promise} promise whose fate is determine by resolver
+	 * @private
+	 */
+	function _promise(resolver, status) {
+		var self, value, handlers = [];
+
+		self = new Promise(then, inspect);
 
 		// Call the provider resolver to seal the promise's fate
 		try {
@@ -236,7 +249,7 @@ define(function () {
 		}
 
 		// Return the promise
-		return new Promise(then, inspect);
+		return self;
 
 		/**
 		 * Register handlers for this promise.
@@ -246,19 +259,19 @@ define(function () {
 		 * @return {Promise} new Promise
 		 */
 		function then(onFulfilled, onRejected, onProgress) {
-			return promise(function(resolve, reject, notify) {
-				handlers
-				// Call handlers later, after resolution
-				? handlers.push(function(value) {
-					value.then(onFulfilled, onRejected, onProgress)
+			var next = _promise(function(resolve, reject, notify) {
+				// if not resolved, push onto handlers, otherwise execute asap
+				// but not in the current stack
+				handlers ? handlers.push(run) : enqueue(function() { run(value); });
+
+				function run(p) {
+					p.then(onFulfilled, onRejected, onProgress)
 						.then(resolve, reject, notify);
-				})
-				// Call handlers soon, but not in the current stack
-				: enqueue(function() {
-					value.then(onFulfilled, onRejected, onProgress)
-						.then(resolve, reject, notify);
-				});
-			});
+				}
+
+			}, status && status.observed());
+
+			return next;
 		}
 
 		function inspect() {
@@ -277,8 +290,14 @@ define(function () {
 
 			value = coerce(val);
 			scheduleHandlers(handlers, value);
-
 			handlers = undef;
+
+			if (status) {
+				value.then(
+					function () { status.fulfilled(); },
+					function(r) { status.rejected(r); }
+				);
+			}
 		}
 
 		/**
@@ -589,7 +608,7 @@ define(function () {
 			return promise(resolveMap);
 
 			function resolveMap(resolve, reject, notify) {
-				var results, len, toResolve, resolveOne, i;
+				var results, len, toResolve, i;
 
 				// Since we know the resulting length, we can preallocate the results
 				// array to avoid array expansions.
@@ -601,16 +620,6 @@ define(function () {
 					return;
 				}
 
-				resolveOne = function(item, i) {
-					when(item, mapFunc, fallback).then(function(mapped) {
-						results[i] = mapped;
-
-						if(!--toResolve) {
-							resolve(results);
-						}
-					}, reject, notify);
-				};
-
 				// Since mapFunc may be async, get all invocations of it into flight
 				for(i = 0; i < len; i++) {
 					if(i in array) {
@@ -618,6 +627,16 @@ define(function () {
 					} else {
 						--toResolve;
 					}
+				}
+
+				function resolveOne(item, i) {
+					when(item, mapFunc, fallback).then(function(mapped) {
+						results[i] = mapped;
+
+						if(!--toResolve) {
+							resolve(results);
+						}
+					}, reject, notify);
 				}
 			}
 		});
@@ -694,7 +713,7 @@ define(function () {
 	//
 
 	var reduceArray, slice, fcall, nextTick, handlerQueue,
-		setTimeout, funcProto, call, arrayProto, undef;
+		setTimeout, funcProto, call, arrayProto, monitorApi, undef;
 
 	//
 	// Shared handler queue processing
@@ -712,15 +731,8 @@ define(function () {
 	 */
 	function enqueue(task) {
 		if(handlerQueue.push(task) === 1) {
-			scheduleDrainQueue();
+			nextTick(drainQueue);
 		}
-	}
-
-	/**
-	 * Schedule the queue to be drained after the stack has cleared.
-	 */
-	function scheduleDrainQueue() {
-		nextTick(drainQueue);
 	}
 
 	/**
@@ -742,6 +754,9 @@ define(function () {
 	// Capture function and array utils
 	//
 	/*global setImmediate,process,vertx*/
+
+	// Allow attaching the monitor to when() if env has no console
+	monitorApi = typeof console != 'undefined' ? console : when;
 
 	// capture setTimeout to avoid being caught by fake timers used in time based tests
 	setTimeout = global.setTimeout;

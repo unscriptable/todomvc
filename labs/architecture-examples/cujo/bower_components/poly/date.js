@@ -1,17 +1,16 @@
-/*
-	poly/date
-
-	ES5-ish Date shims for older browsers.
-
-	(c) copyright 2011-2013 Brian Cavalier and John Hann
-
-	This module is part of the cujo.js family of libraries (http://cujojs.com/).
-
-	Licensed under the MIT License at:
-		http://www.opensource.org/licenses/mit-license.php
+/** @license MIT License (c) copyright 2013 original authors */
+/**
+ * poly/date
+ *
+ * @author Brian Cavalier
+ * @author John Hann
+ *
+ * ES5-ish Date shims for older browsers.
 */
-(function (origDate) {
-define(['./lib/_base'], function (base) {
+(function (origDate, define) {
+define(function (require) {
+
+	var base = require('./lib/_base');
 
 	var origProto,
 		origParse,
@@ -213,4 +212,9 @@ define(['./lib/_base'], function (base) {
 	};
 
 });
-}(Date));
+}(
+	Date,
+	typeof define == 'function' && define.amd
+		? define
+		: function (factory) { module.exports = factory(require); }
+));

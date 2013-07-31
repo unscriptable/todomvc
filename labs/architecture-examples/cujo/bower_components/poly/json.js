@@ -1,14 +1,17 @@
+/** @license MIT License (c) copyright 2013 original authors */
 /**
  * JSON polyfill / shim
  *
- * (c) copyright 2011-2013 Brian Cavalier and John Hann
- *
- * poly is part of the cujo.js family of libraries (http://cujojs.com/)
- *
- * Licensed under the MIT License at:
- * 		http://www.opensource.org/licenses/mit-license.php
- *
+ * @author Brian Cavalier
+ * @author John Hann
  */
-define(['./support/json3'], function (JSON) {
-	return JSON;
+(function (define) {
+define(function (require) {
+"use strict";
+	return require('./support/json3');
 });
+}(
+	typeof define == 'function' && define.amd
+		? define
+		: function (factory) { module.exports = factory(require); }
+));

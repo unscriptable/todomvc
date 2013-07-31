@@ -1,15 +1,15 @@
+/** @license MIT License (c) copyright 2013 original authors */
 /**
  * Function polyfill / shims
  *
- * (c) copyright 2011-2013 Brian Cavalier and John Hann
- *
- * This module is part of the cujo.js family of libraries (http://cujojs.com/).
- *
- * Licensed under the MIT License at:
- * 		http://www.opensource.org/licenses/mit-license.php
+ * @author Brian Cavalier
+ * @author John Hann
  */
-define (['./lib/_base'], function (base) {
+(function (define) {
+define(function (require) {
 "use strict";
+
+	var base = require('./lib/_base');
 
 	var bind,
 		slice = [].slice,
@@ -46,3 +46,8 @@ define (['./lib/_base'], function (base) {
 	return {};
 
 });
+}(
+	typeof define == 'function' && define.amd
+		? define
+		: function (factory) { module.exports = factory(require); }
+));

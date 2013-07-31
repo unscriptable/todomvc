@@ -1,24 +1,26 @@
+/** @license MIT License (c) copyright 2013 original authors */
 /**
- * polyfill / shim plugin for AMD loaders
+ * polyfill / shim for AMD loaders
  *
- * (c) copyright 2011-2013 Brian Cavalier and John Hann
- *
- * poly is part of the cujo.js family of libraries (http://cujojs.com/)
- *
- * Licensed under the MIT License at:
- * 		http://www.opensource.org/licenses/mit-license.php
- *
+ * @author Brian Cavalier
+ * @author John Hann
  */
+(function (define) {
+define(function (require) {
+"use strict";
 
-define(['./all'], function (all) {
+	var all = require('./all');
 
 	var poly = {};
 
 	// copy all
 	for (var p in all) poly[p] = all[p];
 
-	poly.version = '0.5.2';
-
 	return poly;
 
 });
+}(
+	typeof define == 'function' && define.amd
+		? define
+		: function (factory) { module.exports = factory(require); }
+));
