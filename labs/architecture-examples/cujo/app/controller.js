@@ -1,6 +1,6 @@
 /*global define */
-define(function () {
-	'use strict';
+(function(define) { 'use strict';
+define(function() {
 
 	var textProp, updateRemainingCount;
 
@@ -92,3 +92,5 @@ define(function () {
 	};
 
 });
+}(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
+
